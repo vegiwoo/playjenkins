@@ -12,7 +12,6 @@ pipeline {
 
     REGISTRYTAG = "116.203.255.57:5000/justme/myweb"
     IMAGE = ""
-    LOCALREPOPATH = ""
   }
 
   agent any
@@ -40,11 +39,13 @@ pipeline {
         LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
         print ("=== LOCALREPOPATH - ${LOCALREPOPATH}  === ")
 
-        def list =  sh (returnStdout: true, script: 'ls -la')
-        for (item in list) {
-          println item
+        script {
+          def list =  sh (returnStdout: true, script: 'ls -la')
+          for (item in list) {
+            println item
+          }
+
         }
-        
       }
     }
 
