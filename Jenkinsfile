@@ -1,8 +1,10 @@
 pipeline {
 
   environment {
-    registry = "116.203.255.57:5000/justme/myweb"
-    dockerImage = ""
+    // Подготовка пути для сохранения изображения
+    REGISTRYPATH = "116.203.255.57:5000/justme/myweb"
+    // Подготовка имени будущего образа
+    IMAGE = 'myweb:latest'
   }
 
   agent any
@@ -18,7 +20,8 @@ pipeline {
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+
+          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${REGISTRYPATH}")
         }
       }
     }
@@ -27,7 +30,7 @@ pipeline {
       steps{
         script {
           docker.withRegistry( "" ) {
-            dockerImage.push()
+            IMAGE.push()
           }
         }
       }
