@@ -2,8 +2,8 @@
 pipeline {
 
   environment {
-    registry = "116.203.255.57:5000/justme/myweb"
-    dockerImage = ""
+    REGISTRYTAG = "localhost:5000/justme/myweb"
+    IMAGE = ""
   }
 
   agent any
@@ -12,14 +12,22 @@ pipeline {
 
     stage('Checkout Source') {
       steps {
+        print ("=== 1.Checkout Source === ")
         git 'https://github.com/justmeandopensource/playjenkins.git'
+        print ("=== OK === ")
       }
     }
 
     stage('Build image') {
       steps{
         script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          print ("=== 2.Build image === ")
+          // Tag for future image
+          IMAGE = REGISTRYTAG + ":{$BUILD_NUMBER}"
+          print ("=== 2.1 Tagging future image ${IMAGE} === ")
+          // Build image
+          sh (returnStdout: true, script: "docker build -t ${IMAGE} .")
+          print ("=== OK === ")
         }
       }
     }
@@ -28,7 +36,7 @@ pipeline {
       steps{
         script {
           docker.withRegistry( "" ) {
-            dockerImage.push()
+            IMAGE.push()
           }
         }
       }
