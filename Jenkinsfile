@@ -41,8 +41,11 @@ pipeline {
           LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
           print ("=== LOCALREPOPATH - ${LOCALREPOPATH}  === ")
 
-          sh (returnStdout: true, script: 'ls -la')
-  
+          sh (returnStdout: true, script: 'ls')
+          for (item in list) {
+            println item
+          }
+          
         }
       }
     }
