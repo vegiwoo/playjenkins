@@ -34,12 +34,13 @@ pipeline {
         )
         print ("=== OK === ")
 
-        //Check local repo path
-        print ("=== 1.1 Check localpath  === ")
-        LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
-        print ("=== LOCALREPOPATH - ${LOCALREPOPATH}  === ")
 
         script {
+          //Check local repo path
+          print ("=== 1.1 Check localpath  === ")
+          LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
+          print ("=== LOCALREPOPATH - ${LOCALREPOPATH}  === ")
+
           def list =  sh (returnStdout: true, script: 'ls -la')
           for (item in list) {
             println item
