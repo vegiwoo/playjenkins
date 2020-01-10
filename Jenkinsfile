@@ -2,7 +2,7 @@
 pipeline {
 
   environment {
-    REGISTRYTAG = "localhost:5000/justme/myweb"
+    REGISTRYTAG = "116.203.255.57:5000/justme/myweb"
     IMAGE = ""
   }
 
@@ -23,7 +23,7 @@ pipeline {
         script {
           print ("=== 2.Build image === ")
           // Tag for future image
-          IMAGE = REGISTRYTAG + ":{$BUILD_NUMBER}"
+          IMAGE = REGISTRYTAG + ":latest"
           print ("=== 2.1 Tagging future image ${IMAGE} === ")
           // Build image
           sh (returnStdout: true, script: "docker build -t ${IMAGE} .")
