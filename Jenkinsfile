@@ -4,6 +4,7 @@ pipeline {
   environment {
     REGISTRYTAG = "116.203.255.57:5000/justme/myweb"
     IMAGE = ""
+    LOCALREPOPATH = ""
   }
 
   agent any
@@ -25,12 +26,15 @@ pipeline {
           // Tag for future image
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 2.1 Tagging future image ${IMAGE} === ")
-          // Build image
-          docker.build IMAGE
-          
 
+          //Check local repo path
+          LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
+          print ("=== 2.2 Local repo path ${LOCALREPOPATH} === ")
 
-          //sh (returnStdout: true, script: "docker build -t ${IMAGE} .")
+          sh (returnStdout: true, script: "ls -la")
+
+          print ("=== 2.3 Build image === ")
+          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
           print ("=== OK === ")
         }
       }
