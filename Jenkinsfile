@@ -46,12 +46,11 @@ pipeline {
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 2.1 Tagging future image ${IMAGE} === ")
           //sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
+          //dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            print ("=== 2.2 Build image  === ")
+            docker.build IMAGE
+            print ("=== OK === ")
         }
-        //dockerImage = docker.build registry + ":$BUILD_NUMBER"
-          print ("=== 2.2 Build image  === ")
-          docker.build IMAGE
-          print ("=== OK === ")
-
       }
     }
 
