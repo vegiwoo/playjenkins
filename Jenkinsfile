@@ -15,6 +15,15 @@ pipeline {
 
   stages {
 
+    stage('Docker version') {
+      steps {
+        script {
+          sh (returnStdout: true, script: "docker version")
+        }
+      }
+    }
+
+
     stage('Checkout Source') {
       steps {
         print ("=== 1. Git Checkout  === ")
