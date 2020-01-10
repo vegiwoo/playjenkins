@@ -1,42 +1,47 @@
-#!groovy
-properties([disableConcurrentBuilds()])
 
 pipeline {
-  options {
-      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+
+  environment {
+    registry = "localhost:5000/justme/myweb"
+    dockerImage = ""
   }
 
-  agent {
-      label 'master'
-  }
+  agent any
 
-  environment
-      {
-          GITREPO = "https://github.com/vegiwoo/playjenkins.git"
-      }
   stages {
+
     stage('Checkout Source') {
-        steps {
-          print ("=== STEP 1 - SOURCE GITCODE ===")
-          git GITREPO
-          print ("Source OK")
-        }
+      steps {
+        git 'https://github.com/justmeandopensource/playjenkins.git'
+      }
     }
 
-    // stage('Build image') {
-    //
-    //
-    //
-    //
-    // }
-    //
-    // stage('Push Image') {
-    //
-    // }
-    //
-    // stage('Deploy App') {
-    //
-    // }
+    stage('Build image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+    }
+
+    stage('Push Image') {
+      steps{
+        script {
+          docker.withRegistry( "" ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+
+    stage('Deploy App') {
+      steps {
+        script {
+          kubernetesDeploy(configs: "myweb.yaml", kubeconfigId: "mykubeconfig")
+        }
+      }
+    }
+
   }
 
 }
