@@ -15,15 +15,6 @@ pipeline {
 
   stages {
 
-    stage('Docker version') {
-      steps {
-        script {
-          sh (returnStdout: true, script: "docker version")
-        }
-      }
-    }
-
-
     stage('Checkout Source') {
       steps {
         print ("=== 1. Git Checkout  === ")
@@ -40,7 +31,6 @@ pipeline {
         )
         print ("=== OK === ")
 
-
         script {
           //Check local repo path
           LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
@@ -55,11 +45,13 @@ pipeline {
           // Tag for future image
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 2.1 Tagging future image ${IMAGE} === ")
-
-          print ("=== 2.2 Build image === ")
-          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
-          print ("=== OK === ")
+          //sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
         }
+        //dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          print ("=== 2.2 Build image  === ")
+          docker.build IMAGE
+          print ("=== OK === ")
+
       }
     }
 
