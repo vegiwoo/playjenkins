@@ -17,7 +17,8 @@ pipeline {
     stage('Check Docker ') {
       steps {
         script {
-          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
+          sh(returnStdout: true, script: 'sudo apt-get install -y dpkg grep')
+          def docker = sh(returnStdout: true, script: 'sudo dpkg --get-selections | grep docker-ce')
           docker.each {
           	println it
           }
