@@ -18,7 +18,6 @@ pipeline {
       steps {
         script {
           def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
-          def docker = ["docker-ce", "docker-ce-cli"]
           docker.each {
           	println it
           }
