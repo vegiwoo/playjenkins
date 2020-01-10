@@ -26,7 +26,11 @@ pipeline {
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 2.1 Tagging future image ${IMAGE} === ")
           // Build image
-          sh (returnStdout: true, script: "docker build -t ${IMAGE} .")
+          docker.build IMAGE
+          
+
+
+          //sh (returnStdout: true, script: "docker build -t ${IMAGE} .")
           print ("=== OK === ")
         }
       }
