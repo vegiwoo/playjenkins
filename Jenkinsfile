@@ -14,45 +14,61 @@ pipeline {
   agent any
 
   stages {
-
-    stage('Checkout Source') {
+    stage('Check Docker ') {
       steps {
-        print ("=== 1. Git Checkout  === ")
-        checkout(
-            [
-                $class : 'GitSCM',
-                branches : [[ name: REMOTEREPOBRANCH ]],
-                doGenerateSubmoduleConfigurations: false,
-                userRemoteConfigs : [[
-                    url : REMOTEREPO,
-                    credentialsId: CREDENTIALS
-                ]]
-            ]
-        )
-        print ("=== OK === ")
-
         script {
-          //Check local repo path
-          LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
+          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
+          def docker = ["docker-ce", "docker-ce-cli"]
+          docker.each {
+          	println it
+          }
+          println(docker.size())
+
         }
       }
     }
 
-    stage('Build image') {
-      steps{
-        script {
-          print ("=== 2.Build image === ")
-          // Tag for future image
-          IMAGE = REGISTRYTAG + ":latest"
-          print ("=== 2.1 Tagging future image ${IMAGE} === ")
-          //sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
-          //dockerImage = docker.build registry + ":$BUILD_NUMBER"
-            print ("=== 2.2 Build image  === ")
-            docker.build IMAGE
-            print ("=== OK === ")
-        }
-      }
-    }
+
+
+    //
+    // stage('Checkout Source') {
+    //   steps {
+    //     print ("=== 1. Git Checkout  === ")
+    //     checkout(
+    //         [
+    //             $class : 'GitSCM',
+    //             branches : [[ name: REMOTEREPOBRANCH ]],
+    //             doGenerateSubmoduleConfigurations: false,
+    //             userRemoteConfigs : [[
+    //                 url : REMOTEREPO,
+    //                 credentialsId: CREDENTIALS
+    //             ]]
+    //         ]
+    //     )
+    //     print ("=== OK === ")
+    //
+    //     script {
+    //       //Check local repo path
+    //       LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
+    //     }
+    //   }
+    // }
+    //
+    // stage('Build image') {
+    //   steps{
+    //     script {
+    //       print ("=== 2.Build image === ")
+    //       // Tag for future image
+    //       IMAGE = REGISTRYTAG + ":latest"
+    //       print ("=== 2.1 Tagging future image ${IMAGE} === ")
+    //       //sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
+    //       //dockerImage = docker.build registry + ":$BUILD_NUMBER"
+    //         print ("=== 2.2 Build image  === ")
+    //         docker.build IMAGE
+    //         print ("=== OK === ")
+    //     }
+    //   }
+    // }
 
     // stage('Push Image') {
     //   steps{
