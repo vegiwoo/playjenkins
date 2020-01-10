@@ -1,3 +1,6 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
 pipeline {
 
   environment {
@@ -7,7 +10,13 @@ pipeline {
     IMAGE = 'myweb:latest'
   }
 
-  agent any
+  options {
+      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+  }
+
+  agent {
+      label 'master'
+      }
 
   stages {
 
