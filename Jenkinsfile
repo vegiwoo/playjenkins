@@ -15,15 +15,30 @@ pipeline {
 
   stages {
 
-    stage('Check Docker ') {
+    stage('Check Docker') {
       steps {
         script {
 
           def docker = sh(returnStdout: true, script: 'docker -v')
-      
-          print (docker)
-          print (docker.size())
 
+          if (docker.size() = 0) {
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
+            sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
+            sh(returnStdout: true, script: 'apt-key add gpg')
+            sh(returnStdout: true, script: 'echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list')
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
+            sh(returnStdout: true, script: 'systemctl enable docker')
+
+            print ("Docker installed now")
+            def dockerNew = sh(returnStdout: true, script: 'docker -v')
+            print (dockerNew)
+          } else {
+            print ("Docker installed")
+            def dockerOld = sh(returnStdout: true, script: 'docker -v')
+            print (dockerOld)
+          }
         }
       }
     }
