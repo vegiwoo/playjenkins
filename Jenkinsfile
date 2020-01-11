@@ -66,21 +66,20 @@ pipeline {
       }
     }
 
-    // stage('Build image') {
-    //   steps{
-    //     script {
-    //       print ("=== 2.Build image === ")
-    //       // Tag for future image
-    //       IMAGE = REGISTRYTAG + ":latest"
-    //       print ("=== 2.1 Tagging future image ${IMAGE} === ")
-    //       //sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
-    //       //dockerImage = docker.build registry + ":$BUILD_NUMBER"
-    //         print ("=== 2.2 Build image  === ")
-    //         docker.build IMAGE
-    //         print ("=== OK === ")
-    //     }
-    //   }
-    // }
+    stage('Build image') {
+      steps{
+        script {
+          print ("=== 3.Build image === ")
+          // Tag for future image
+          IMAGE = REGISTRYTAG + ":latest"
+          print ("=== 3.1 Tagging future image ${IMAGE} ===")
+          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
+          print ("=== 3.2 Build image  ===")
+          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
+          print ("=== OK === ")
+        }
+      }
+    }
 
     // stage('Push Image') {
     //   steps{
