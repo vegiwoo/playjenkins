@@ -19,31 +19,27 @@ pipeline {
       steps {
         script {
 
-          def statusCode = sh script:'dpkg --get-selections | grep doker', returnStatus:true
+          def statusCodeGrep = sh script:'dpkg --get-selections | grep doker', returnStatus:true
           def statusCodeDockerV = sh script:'docker -v', returnStatus:true
 
-          print (statusCode)
-          print (statusCodeDockerV)
+          if (statusCodeGrep != 1 && statusCodeDockerV != 0) {
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
+            sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
+            sh(returnStdout: true, script: 'apt-key add gpg')
+            sh(returnStdout: true, script: 'echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list')
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
+            sh(returnStdout: true, script: 'systemctl enable docker')
 
-
-          // if (statusCode == 1) {
-          //   sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
-          //   sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
-          //   sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
-          //   sh(returnStdout: true, script: 'apt-key add gpg')
-          //   sh(returnStdout: true, script: 'echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list')
-          //   sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
-          //   sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
-          //   sh(returnStdout: true, script: 'systemctl enable docker')
-          //
-          //   print ("Docker installed now")
-          //   def dockerNew = sh(returnStdout: true, script: 'docker -v')
-          //   print (dockerNew)
-          // } else {
-          //   print ("Docker installed")
-          //   def dockerOld = sh(returnStdout: true, script: 'docker -v')
-          //   print (dockerOld)
-          // }
+            print ("Docker installed now")
+            def dockerNew = sh(returnStdout: true, script: 'docker -v')
+            print (dockerNew)
+          } else {
+            print ("Docker installed")
+            def dockerOld = sh(returnStdout: true, script: 'docker -v')
+            print (dockerOld)
+          }
         }
       }
     }
