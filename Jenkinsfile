@@ -21,7 +21,7 @@ pipeline {
 
           def docker = sh(returnStdout: true, script: 'docker -v')
 
-          if (docker.size() = 0) {
+          if (docker.size() == 0) {
             sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
             sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
             sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
