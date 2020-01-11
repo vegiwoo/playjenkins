@@ -21,7 +21,7 @@ pipeline {
 
           def statusCode = sh script:'dpkg --get-selections | grep doker', returnStatus:true
 
-          if (statusCode != 0) {
+          if (statusCode == 1) {
             sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
             sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
             sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
