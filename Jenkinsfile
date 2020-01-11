@@ -19,7 +19,7 @@ pipeline {
       steps {
         script {
 
-          def docker = sh(returnStdout: true, script: 'docker -v')
+          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep doker')
 
           if (docker.size() == 0) {
             sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
