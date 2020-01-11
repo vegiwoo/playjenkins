@@ -20,34 +20,25 @@ pipeline {
         script {
 
           def statusCode = sh script:'dpkg --get-selections | grep doker', returnStatus:true
-          print (statusCode)
 
+          if (statusCode != 0) {
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
+            sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
+            sh(returnStdout: true, script: 'apt-key add gpg')
+            sh(returnStdout: true, script: 'echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list')
+            sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
+            sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
+            sh(returnStdout: true, script: 'systemctl enable docker')
 
-          // def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep doker').execute()
-          // print "Output: " + docker.text
-          // print "Exit code: " + docker.exitValue()
-
-
-
-
-          // if (docker.size() == 0) {
-          //   sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
-          //   sh(returnStdout: true, script: 'apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common')
-          //   sh(returnStdout: true, script: 'wget https://download.docker.com/linux/debian/gpg')
-          //   sh(returnStdout: true, script: 'apt-key add gpg')
-          //   sh(returnStdout: true, script: 'echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list')
-          //   sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
-          //   sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
-          //   sh(returnStdout: true, script: 'systemctl enable docker')
-          //
-          //   print ("Docker installed now")
-          //   def dockerNew = sh(returnStdout: true, script: 'docker -v')
-          //   print (dockerNew)
-          // } else {
-          //   print ("Docker installed")
-          //   def dockerOld = sh(returnStdout: true, script: 'docker -v')
-          //   print (dockerOld)
-          // }
+            print ("Docker installed now")
+            def dockerNew = sh(returnStdout: true, script: 'docker -v')
+            print (dockerNew)
+          } else {
+            print ("Docker installed")
+            def dockerOld = sh(returnStdout: true, script: 'docker -v')
+            print (dockerOld)
+          }
         }
       }
     }
