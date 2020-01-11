@@ -4,7 +4,7 @@ pipeline {
   environment {
     REMOTEREPO = 'https://github.com/justmeandopensource/playjenkins.git'
     REMOTEREPOBRANCH = 'master'
-    CREDENTIALS = 'github_login_and_password'
+    CREDENTIALS = 'gitHub_login_password'
     LOCALREPOPATH = ''
 
     REGISTRYTAG = "116.203.255.57:5000/justme/myweb"
@@ -15,10 +15,10 @@ pipeline {
 
   stages {
 
-    stage('Check Docker') {
+    stage('Check Docker on Jenkins Pod') {
       steps {
         script {
-
+          print ("=== 1. Check Docker on Jenkins Pod  === ")
           def statusCodeGrep = sh script:'dpkg --get-selections | grep doker', returnStatus:true
           def statusCodeDockerV = sh script:'docker -v', returnStatus:true
 
@@ -32,44 +32,40 @@ pipeline {
             sh(returnStdout: true, script: 'apt install -y docker-ce docker-ce-cli containerd.io')
             sh(returnStdout: true, script: 'systemctl enable docker')
 
-            print ("Docker installed now")
-            def dockerNew = sh(returnStdout: true, script: 'docker -v')
+            print ("=== Docker installed now ===")
+
             print (dockerNew)
           } else {
-            print ("Docker installed")
-            def dockerOld = sh(returnStdout: true, script: 'docker -v')
-            print (dockerOld)
+            print ("=== Docker installed ===")
           }
         }
       }
     }
 
+    stage('Checkout Source') {
+      steps {
+        print ("=== 2. Git Repo Checkout  === ")
+        checkout(
+            [
+                $class : 'GitSCM',
+                branches : [[ name: REMOTEREPOBRANCH ]],
+                doGenerateSubmoduleConfigurations: false,
+                userRemoteConfigs : [[
+                    url : REMOTEREPO,
+                    credentialsId: CREDENTIALS
+                ]]
+            ]
+        )
 
+        script {
+          //Check local repo path
+          LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
+          print ("=== Localpath is ${LOCALREPOPATH} === ")
+          print ("=== OK === ")
+        }
+      }
+    }
 
-    //
-    // stage('Checkout Source') {
-    //   steps {
-    //     print ("=== 1. Git Checkout  === ")
-    //     checkout(
-    //         [
-    //             $class : 'GitSCM',
-    //             branches : [[ name: REMOTEREPOBRANCH ]],
-    //             doGenerateSubmoduleConfigurations: false,
-    //             userRemoteConfigs : [[
-    //                 url : REMOTEREPO,
-    //                 credentialsId: CREDENTIALS
-    //             ]]
-    //         ]
-    //     )
-    //     print ("=== OK === ")
-    //
-    //     script {
-    //       //Check local repo path
-    //       LOCALREPOPATH = sh (returnStdout: true, script: 'pwd')
-    //     }
-    //   }
-    // }
-    //
     // stage('Build image') {
     //   steps{
     //     script {
