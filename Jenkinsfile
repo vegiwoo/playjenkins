@@ -19,12 +19,16 @@ pipeline {
       steps {
         script {
 
-          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep doker').execute()
-          print "Output: " + docker.text
-          print "Exit code: " + docker.exitValue()
+          def statusCode = sh script:'dpkg --get-selections | grep doker', returnStatus:true
+          print (statusCode)
 
 
-          
+          // def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep doker').execute()
+          // print "Output: " + docker.text
+          // print "Exit code: " + docker.exitValue()
+
+
+
 
           // if (docker.size() == 0) {
           //   sh(returnStdout: true, script: 'apt update -y && apt upgrade -y')
