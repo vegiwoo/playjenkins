@@ -14,15 +14,18 @@ pipeline {
   agent any
 
   stages {
+
     stage('Check Docker ') {
       steps {
         script {
-          sh(returnStdout: true, script: 'apt-get install -y dpkg grep')
-          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
-          docker.each {
-          	println it
-          }
-          println(docker.size())
+          sh(returnStdout: true, script: 'sudo docker version'
+
+          // sh(returnStdout: true, script: 'apt-get install -y dpkg grep')
+          // def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
+          // docker.each {
+          // 	println it
+          // }
+          // println(docker.size())
 
         }
       }
