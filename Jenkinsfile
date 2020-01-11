@@ -77,7 +77,8 @@ pipeline {
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 3.1 Tagging future image ${IMAGE} ===")
           print ("=== 3.2 Build image  ===")
-          sh (returnStdout: true, script: "export DOCKER_HOST="DOCKERHOST")
+       String myString = "Строка со \"словом\" в кавычках";
+          sh (returnStdout: true, script: "export DOCKER_HOST=\"${DOCKERHOST}\"")
           sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
           print ("=== OK === ")
         }
