@@ -7,6 +7,7 @@ pipeline {
     CREDENTIALS = 'gitHub_login_password'
     LOCALREPOPATH = ''
 
+    DOCKERHOST = 'tcp://116.203.255.57:5000'
     REGISTRYTAG = "116.203.255.57:5000/justme/myweb"
     IMAGE = ""
   }
@@ -70,11 +71,13 @@ pipeline {
       steps{
         script {
           print ("=== 3.Build image === ")
+
+
           // Tag for future image
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 3.1 Tagging future image ${IMAGE} ===")
-          sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
           print ("=== 3.2 Build image  ===")
+          sh (returnStdout: true, script: "export DOCKER_HOST="DOCKERHOST")
           sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
           print ("=== OK === ")
         }
