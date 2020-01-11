@@ -19,10 +19,10 @@ pipeline {
       steps {
         script {
 
-          def docker = sh(returnStdout: true, script: 'dpkg --get-selections | grep docker-ce')
-          def substrings = docker.split("\n")
-          print (substrings)
-          print ("Dockers strings" + docker.size())
+          def docker = sh(returnStdout: true, script: 'docker -v')
+      
+          print (docker)
+          print (docker.size())
 
         }
       }
