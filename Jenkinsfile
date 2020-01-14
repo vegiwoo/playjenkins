@@ -2,7 +2,7 @@
 pipeline {
 
   environment {
-    REMOTEREPO = 'https://github.com/justmeandopensource/playjenkins.git'
+    REMOTEREPO = 'https://github.com/vegiwoo/playjenkins.git'
     REMOTEREPOBRANCH = 'master'
     CREDENTIALS = 'gitHub_login_password'
     LOCALREPOPATH = ''
@@ -15,14 +15,17 @@ pipeline {
   agent any
 
   stages {
-    stage('Docker info') {
-      steps {
-        script {
-          sh script:'docker -info'
+    stage('Checkout Source') {
+       git REMOTEREPO
+    }
+
+    stage('Build image') {
+        steps{
+          script {
+            dockerImage = docker.build REGISTRYTAG
+          }
         }
       }
-    }
-    
 
     // stage('Check Docker on Jenkins Pod') {
     //   steps {
