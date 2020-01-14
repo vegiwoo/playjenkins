@@ -1,5 +1,5 @@
 ---
-apiVersion: extensions/v1beta1d
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
@@ -16,7 +16,7 @@ spec:
         app: myweb
     spec:
       containers:
-      - image: 116.203.255.57:5000/justme/myweb:latest
+      - image: 116.203.255.57:5000/justme/myweb:1
         imagePullPolicy: Always
         name: myweb
 
