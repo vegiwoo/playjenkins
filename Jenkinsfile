@@ -15,7 +15,8 @@ pipeline {
   agent any
 
   stages {
-    stage('Checkout Source') {
+
+    stage('Checkout repo') {
        git REMOTEREPO
     }
 
