@@ -74,6 +74,10 @@ pipeline {
           // Tag for future image
           IMAGE = REGISTRYTAG + ":latest"
           print ("=== 3.1 Tagging future image ${IMAGE} ===")
+
+          print ("=== 3.2 Hosting Docker ===")
+          sh (returnStdout: true, script: "sudo docker -H tcp://116.203.255.57:5000 -H unix:///var/run/docker.sock -d")
+
           print ("=== 3.2 Build image  ===")
 
           sh (returnStdout: true, script: "docker build -t ${IMAGE} ${LOCALREPOPATH}")
