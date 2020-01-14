@@ -17,7 +17,9 @@ pipeline {
   stages {
 
     stage('Checkout repo') {
-       git REMOTEREPO
+      steps {
+        git REMOTEREPO
+      }
     }
 
     stage('Build image') {
